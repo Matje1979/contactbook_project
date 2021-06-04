@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Contact, Person
 from .serializers import ContactSerializer, PersonSerializer
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from datetime import date, timedelta
@@ -14,7 +14,9 @@ from django.http import HttpResponse
 class ContactListView(ListCreateAPIView):
 
     serializer_class = ContactSerializer
-    # permission_classes = (permissions.IsAuthenticated,)
+
+    # authentication_classes = [TokenAuthentication]
+    permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -26,7 +28,7 @@ class ContactDetailView(RetrieveUpdateDestroyAPIView):
     
     serializer_class = ContactSerializer
 
-    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     
     lookup_field="id"
 
@@ -44,7 +46,7 @@ class PersonListView(ListCreateAPIView):
 
     serializer_class = PersonSerializer
 
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         req = self.request
@@ -64,7 +66,7 @@ class PersonDetailView(RetrieveUpdateDestroyAPIView):
     
     serializer_class = PersonSerializer
 
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
     lookup_field="id"
 
@@ -73,7 +75,7 @@ class PersonDetailView(RetrieveUpdateDestroyAPIView):
 class ListAddressesView(APIView):
 
     
-    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     def get(self, request):
         age = request.query_params.get('is_older_than')
         contact_list = []
